@@ -1,0 +1,32 @@
+# Optional name of workflow
+name: ci-workflow 
+# Specify triggers for workflow
+on:
+  push:
+    branches:
+    - main 
+  pull_request:
+env:
+  # Enable colored output in the terminal
+  CARGO_TERM_COLOR: always
+# Groups together jobs that run in this workflow
+jobs:
+  build_and_test:
+    # Configures the job to run on the latest version of Ubuntu runner
+    runs-on: ubuntu-latest
+    steps:
+    # Check out the repository to the runner
+    - uses: actions/checkout@v3
+    # Installs dependencies
+    - name: Install dependencies
+      run: |
+        cargo install cargo-tarpaulin
+        cargo install cargo-audit
+        rustup component add rustfmt
+        rustup component add clippy
+    # Make script executable; works only with Linux and Mac runners
+    # Run script
+    - name: Build and test
+      run: | 
+        chmod +x ./scripts/build_and_test.sh
+        ./scripts/build_and_test.sh
